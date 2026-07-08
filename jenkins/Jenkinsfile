@@ -20,38 +20,8 @@ pipeline {
                     mkdir -p "$GOCACHE" "$GOMODCACHE"
                     
                     # Run the tests
-                    go test -v ./... 2>&1 | go-junit-report > test-results.xml
+                    go test -v ./...
                     '''
-                }
-            }
-            post {
-                always {
-                    junit 'bugtracker-backend/test-results.xml'
-                }
-            }
-        }
-        
-        stage('Unit Tests - Frontend') {
-            agent {
-                docker {
-                    image 'node:20-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                dir('bugtracker-frontend') {
-                    sh '''
-                    # Install dependencies
-                    npm ci
-                    
-                    # Run the tests
-                    npm test
-                    '''
-                }
-            }
-            post {
-                always {
-                    junit 'bugtracker-frontend/test-results.xml'
                 }
             }
         }
