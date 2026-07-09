@@ -103,34 +103,34 @@ pipeline {
             }
         }
 
-        // stage ('API Tests') {
-        //     agent {
-        //         docker {
-        //             image 'mcr.microsoft.com/playwright:v1.50.0-jammy'
-        //             reuseNode true
-        //             args '-u 0 --network=host'
-        //         }
-        //     }
-        //     steps {
-        //         dir('tests-api') {
-        //             sh '''
-        //             npx wait-port http://localhost:8080/api/health -t 30000
-        //             npm ci
-        //             npx playwright test
-        //             '''
-        //         }
-        //     }
-        //     post {
-        //         always {
-        //             junit 'tests-api/test-results/results.xml'
-        //             publishHTML target: [
-        //                 reportDir: 'tests-api/playwright-report',
-        //                 reportFiles: 'index.html',
-        //                 reportName: 'API Test Report'
-        //             ]
-        //         }
-        //     }
-        // }
+        stage ('API Tests') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.50.0-jammy'
+                    reuseNode true
+                    args '-u 0 --network=host'
+                }
+            }
+            steps {
+                dir('tests-api') {
+                    sh '''
+                    npx wait-port http://localhost:8080/api/health -t 30000
+                    npm ci
+                    npx playwright test
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit 'tests-api/test-results/results.xml'
+                    publishHTML target: [
+                        reportDir: 'tests-api/playwright-report',
+                        reportFiles: 'index.html',
+                        reportName: 'API Test Report'
+                    ]
+                }
+            }
+        }
 
         stage ('End-to-End Tests') {
             agent {
