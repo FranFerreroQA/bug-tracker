@@ -21,6 +21,7 @@ services:
     container_name: my-jenkins
     restart: on-failure
     environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
       - JAVA_OPTS=-Dhudson.model.DirectoryBrowserSupport.CSP="default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
     volumes:
       - jenkins-data:/var/jenkins_home
