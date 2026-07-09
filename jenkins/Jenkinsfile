@@ -120,6 +120,16 @@ pipeline {
                     '''
                 }
             }
+            post {
+                always {
+                    junit 'tests-api/test-results/test-results.xml'
+                    publishHTML target: [
+                        reportDir: 'tests-api/playwright-report',
+                        reportFiles: 'index.html',
+                        reportName: 'API Test Report'
+                    ]
+                }
+            }
         }
     }
 
