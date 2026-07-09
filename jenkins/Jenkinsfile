@@ -19,6 +19,7 @@ pipeline {
                         }
                     }
                     steps {
+                        checkout scm
                         dir('bugtracker-backend') {
                             sh '''
                             # Set Go cache to a writable location
@@ -60,6 +61,7 @@ pipeline {
                         }
                     }
                     steps {
+                        checkout scm
                         dir('bugtracker-frontend') {
                             sh '''
                             # Install dependencies
