@@ -145,13 +145,19 @@ pipeline {
                     sh '''
                     npx wait-port http://localhost:8080 -t 30000
                     npm ci
-                    npx playwright test
+                    npx playwright test --reporter=junit
                     '''
                 }
+                // stash results and report so the controller can access them
+                stash name: 'e2e-results', includes: 'tests-e2e/**/test-results*.xml', allowEmpty: true
+                stash name: 'e2e-report', includes: 'tests-e2e/playwright-report/**', allowEmpty: true
             }
             post {
                 always {
-                    junit 'tests-e2e/test-results/results.xml'
+                    // unstash artifacts produced inside the agent
+                    unstash 'e2e-results'
+                    unstash 'e2e-report'
+                    junit testResults: 'tests-e2e/**/test-results*.xml', allowEmptyResults: true
                     publishHTML target: [
                         reportDir: 'tests-e2e/playwright-report',
                         reportFiles: 'index.html',
