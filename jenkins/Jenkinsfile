@@ -135,7 +135,7 @@ pipeline {
         stage ('End-to-End Tests') {
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.50.0-jammy'
+                    image 'mcr.microsoft.com/playwright:v1.61.1-jammy'
                     reuseNode true
                     args '-u 0 --network=host'
                 }
