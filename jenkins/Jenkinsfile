@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout(true)
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -141,6 +145,7 @@ pipeline {
                 }
             }
             steps {
+                checkout scm
                 dir('tests-e2e') {
                     sh '''
                     npm ci
