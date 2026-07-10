@@ -16,9 +16,15 @@ pipeline {
                 deleteDir()
                 script {
                     if (isUnix()) {
-                        sh 'git clone --branch "$GIT_BRANCH" --single-branch "$GIT_URL" .'
+                        sh '''
+                        mkdir -p "$WORKSPACE"
+                        git clone --branch "$GIT_BRANCH" --single-branch "$GIT_URL" "$WORKSPACE"
+                        '''
                     } else {
-                        bat 'git clone --branch %GIT_BRANCH% --single-branch %GIT_URL% .'
+                        bat '''
+                        if not exist "%WORKSPACE%" mkdir "%WORKSPACE%"
+                        git clone --branch %GIT_BRANCH% --single-branch %GIT_URL% "%WORKSPACE%"
+                        '''
                     }
                 }
             }
