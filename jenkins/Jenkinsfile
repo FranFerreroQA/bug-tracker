@@ -8,13 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                dir("${env.WORKSPACE}") {
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: env.CHANGE_TARGET ?: env.BRANCH_NAME ?: 'main']],
-                        userRemoteConfigs: [[url: 'https://github.com/FranFerreroQA/bug-tracker.git']]
-                    ])
-                }
+                git branch: 'main', url: 'https://github.com/FranFerreroQA/bug-tracker.git'
             }
         }
 
