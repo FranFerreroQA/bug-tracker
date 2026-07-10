@@ -8,7 +8,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/FranFerreroQA/bug-tracker.git'
+                deleteDir()
+                script {
+                    if (isUnix()) {
+                        sh 'git clone --branch main --single-branch https://github.com/FranFerreroQA/bug-tracker.git .'
+                    } else {
+                        bat 'git clone --branch main --single-branch https://github.com/FranFerreroQA/bug-tracker.git .'
+                    }
+                }
             }
         }
 
