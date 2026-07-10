@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        GIT_URL = 'https://github.com/FranFerreroQA/bug-tracker.git'
+        GIT_BRANCH = 'main'
+    }
+
     options {
         skipDefaultCheckout(true)
     }
@@ -11,9 +16,9 @@ pipeline {
                 deleteDir()
                 script {
                     if (isUnix()) {
-                        sh 'git clone --branch main --single-branch https://github.com/FranFerreroQA/bug-tracker.git .'
+                        sh 'git clone --branch "$GIT_BRANCH" --single-branch "$GIT_URL" .'
                     } else {
-                        bat 'git clone --branch main --single-branch https://github.com/FranFerreroQA/bug-tracker.git .'
+                        bat 'git clone --branch %GIT_BRANCH% --single-branch %GIT_URL% .'
                     }
                 }
             }
