@@ -20,11 +20,22 @@ jobs:
                     cache-dependency-path: |
                         bugtracker-backend/go.sum
 
+            - name: Install go-junit-report
+              run: go install github.com/jstemmer/go-junit-report@latest
+
             - name: Execute backend unit tests
               working-directory: ./bugtracker-backend
               run: |
-                    go test -v ./...
-    
+                    go test -v ./... 2>&1 | go-junit-report > test-results.xml
+
+            - name: Publish Backend Test Results
+              if: always()
+              uses: dorny/test-reporter@v1
+              with:
+                    name: Backend Unit Tests Report
+                    path: bugtracker-backend/test-results.xml
+                    reporter: jest-junit
+
     unit-tests-frontend:
         needs: unit-tests-backend
         runs-on: ubuntu-latest
@@ -34,7 +45,7 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@v4
               with:
-                    node-version: '20'
+                    node-version: '24'
                     cache: 'npm'
                     cache-dependency-path: |
                         bugtracker-frontend/package-lock.json
@@ -46,3 +57,11 @@ jobs:
             - name: Execute frontend unit tests
               working-directory: ./bugtracker-frontend
               run: npm test
+
+            - name: Publish Frontend Test Results
+              if: always()
+              uses: dorny/test-reporter@v1
+              with:
+                    name: Frontend Unit Tests Report
+                    path: bugtracker-frontend/test-results.xml
+                    reporter: jest-junit
