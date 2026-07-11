@@ -9,9 +9,9 @@ on:
 
 jobs:
     unit-tests-backend:
-        outputs:
-            coverage: ${{ steps.unit-test-backend.outputs.report }}
         runs-on: ubuntu-latest
+        outputs:
+          coverage: ${{ steps.unit-tests-backend.outputs.report }}
         steps:
             - uses: actions/checkout@v4
             
@@ -26,7 +26,7 @@ jobs:
               run: go install github.com/jstemmer/go-junit-report/v2@latest
 
             - name: Execute backend unit tests
-              id: unit-test-backend
+              id: unit-tests-backend
               working-directory: ./bugtracker-backend
               run: |
                     go test -json -coverprofile=coverage.out -covermode=atomic ./... 
@@ -37,7 +37,7 @@ jobs:
                     cat coverage.txt >> $GITHUB_STEP_SUMMARY
                     echo '```' >> $GITHUB_STEP_SUMMARY
 
-                    echo "report>>EOF" >> $GITHUB_OUTPUT
+                    echo "report<<EOF" >> $GITHUB_OUTPUT
                     cat coverage.txt >> $GITHUB_OUTPUT
                     echo "EOF" >> $GITHUB_OUTPUT
 
