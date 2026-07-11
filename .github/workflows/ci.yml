@@ -53,6 +53,8 @@ jobs:
 
     unit-tests-frontend:
         runs-on: ubuntu-latest
+        outputs:
+          report: ${{ steps.unit-tests-frontend.outputs.report }}
         steps:
             - uses: actions/checkout@v4
             
@@ -69,6 +71,7 @@ jobs:
               run: npm ci
 
             - name: Execute frontend unit tests
+              id: unit-tests-frontend
               working-directory: ./bugtracker-frontend
               run: |
                 npm test | tee full_output.txt
@@ -77,6 +80,10 @@ jobs:
                 echo '```' >> $GITHUB_STEP_SUMMARY
                 cat full_output.txt >> $GITHUB_STEP_SUMMARY
                 echo '```' >> $GITHUB_STEP_SUMMARY
+
+                echo "report<<EOF" >> $GITHUB_OUTPUT
+                cat full_output.txt >> $GITHUB_OUTPUT
+                echo "EOF" >> $GITHUB_OUTPUT
 
             - name: Publish Frontend Test Results
               if: always()
@@ -101,4 +108,13 @@ jobs:
                     ## Backend Test Coverage Report ##
                     ```
                     ${{ needs.unit-tests-backend.outputs.coverage }}
+                    ```
+            - name: Create Frontend Test Report Comment
+              uses: peter-evans/create-or-update-comment@v4
+              with:
+                issue-number: ${{ github.event.pull_request.number }}
+                body: |
+                    ## Frontend Test Report ##
+                    ```
+                    ${{ steps.unit-tests-frontend.outputs.report }}
                     ```
