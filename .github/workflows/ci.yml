@@ -32,7 +32,7 @@ jobs:
                     go test -json -coverprofile=coverage.out -covermode=atomic ./... 
                     go tool cover -func=coverage.out -o coverage.txt
 
-                    echo "##Go Test Coverage Report##" >> $GITHUB_STEP_SUMMARY
+                    echo "##Backend Test Coverage Report##" >> $GITHUB_STEP_SUMMARY
                     echo '```' >> $GITHUB_STEP_SUMMARY
                     cat coverage.txt >> $GITHUB_STEP_SUMMARY
                     echo '```' >> $GITHUB_STEP_SUMMARY
@@ -54,7 +54,7 @@ jobs:
     unit-tests-frontend:
         runs-on: ubuntu-latest
         outputs:
-          coverage: ${{ steps.unit-tests-frontend.outputs.coverage }}
+          coverage: ${{ steps.unit-tests-frontend.outputs.report }}
         steps:
             - uses: actions/checkout@v4
             
