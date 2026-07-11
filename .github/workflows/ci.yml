@@ -58,14 +58,13 @@ jobs:
                     cache-dependency-path: |
                         bugtracker-frontend/package-lock.json
 
-            # - name: Install dependencies
-            #   working-directory: ./bugtracker-frontend
-            #   run: npm ci
+            - name: Install dependencies
+              working-directory: ./bugtracker-frontend
+              run: npm ci
 
             - name: Execute frontend unit tests
               working-directory: ./bugtracker-frontend
               run: |
-                npm ci
                 npm test | tee full_output.txt
 
                 echo "##Frontend Test Report##" >> $GITHUB_STEP_SUMMARY
