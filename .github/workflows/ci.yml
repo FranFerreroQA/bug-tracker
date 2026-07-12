@@ -151,6 +151,6 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v4
               with:
-                name: API Test Results
+                name: Playwright API Test Report
                 path: ./tests-api/playwright-report/
                 retention-days: 10
