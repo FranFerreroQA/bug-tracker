@@ -91,6 +91,7 @@ npm test
 ```bash
 cd tests-api
 npm install
+npx playwright test
 npm run test:local
 ```
 
