@@ -25,7 +25,7 @@ jobs:
             - name: Install go-junit-report
               run: go install github.com/jstemmer/go-junit-report/v2@latest
 
-            - name: Execute backend unit tests
+            - name: Run backend unit tests
               id: unit-tests-backend
               working-directory: ./bugtracker-backend
               run: |
@@ -70,7 +70,7 @@ jobs:
               working-directory: ./bugtracker-frontend
               run: npm ci
 
-            - name: Execute frontend unit tests
+            - name: Run frontend unit tests
               id: unit-tests-frontend
               working-directory: ./bugtracker-frontend
               run: |
@@ -118,7 +118,7 @@ jobs:
                     ```
                     ${{ needs.unit-tests-frontend.outputs.coverage }}
                     ```
-    api-e2e-tests:
+    api-e2e-perf-tests:
         needs: [unit-tests-backend, unit-tests-frontend]
         runs-on: ubuntu-latest
         steps:
@@ -130,13 +130,13 @@ jobs:
                 docker compose up --build -d
                 npx wait-port http://localhost:8080/api/health -t 30000
 
-            - name: Execute API tests
+            - name: Run API tests
               working-directory: ./tests-api
               run: |
                 npm ci
                 npx playwright test
 
-            - name: Execute E2E tests
+            - name: Run E2E tests
               working-directory: ./tests-e2e
               env: 
                 CI: "1"
@@ -145,6 +145,15 @@ jobs:
                 npx playwright install
                 npx playwright test
 
+            - name: Set Up K6
+              uses: grafana/setup-k6-action@v1.0.0
+            
+            - name: Run Performance tests
+              uses: grafana/run-k6-action@v1.0.0
+              with: 
+                path: ./tests-perf/script.js
+                flags: --out json=summary.json
+       
             - name: Shutdown Application
               run: docker compose down
             
@@ -178,6 +187,22 @@ jobs:
               with:
                 name: Playwright E2E Test Report
                 path: ./tests-e2e/playwright-report/
+                retention-days: 10
+
+            - name: Upload Performance Test Results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: Performance Test Results
+                path: ./tests-perf/summary.json
+                retention-days: 10
+
+            - name: Upload Performance HTML Report
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: Performance HTML Report
+                path: ./tests-perf/perf-results.html
                 retention-days: 10
 
             - name: Publish API Test Results
