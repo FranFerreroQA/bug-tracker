@@ -156,7 +156,7 @@ jobs:
                 path: ./tests-api/test-results/
                 retention-days: 10
 
-            - name: Upload PlaywrightAPI Test Report
+            - name: Upload Playwright API Test Report
               if: always()
               uses: actions/upload-artifact@v4
               with:
@@ -170,6 +170,14 @@ jobs:
               with:
                 name: E2E Test Results
                 path: ./tests-e2e/test-results/
+                retention-days: 10
+
+            - name: Upload Playwright E2E Test Report
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                name: Playwright E2E Test Report
+                path: ./tests-e2e/playwright-report/
                 retention-days: 10
 
             - name: Publish API Test Results
